@@ -1,9 +1,6 @@
 FROM php:7-fpm
 MAINTAINER Jakub Biernacki <kuba.biernacki@codibly.com>
 
-# INSTALL ESSENTIAL TOOLS
-RUN apt-get update && apt-get install -y git htop nano
-
 # INSTALL ESSENTIALS LIBS TO COMPILE PHP EXTENSTIONS
 RUN apt-get update && apt-get install -y \
     # for zip ext
