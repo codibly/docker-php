@@ -70,3 +70,6 @@ RUN curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony && chmod a
 
 # CLEAN APT AND TMP
 RUN apt-get clean && apt-get autoremove && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# COPY PHP.INI SUITABLE FOR DEVELOPMENT
+COPY php.ini.development /usr/local/etc/php/php.ini
