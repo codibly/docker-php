@@ -54,6 +54,10 @@ RUN docker-php-ext-install \
 RUN pecl install xdebug
 RUN bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.remote_enable=1\nxdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/xdebug.ini'
 
+# INSTALL MONGODB
+RUN pecl install mongodb
+RUN bash -c 'echo extension=mongodb.so > /usr/local/etc/php/conf.d/mongodb.ini'
+
 # COMPOSER
 ENV COMPOSER_HOME /usr/local/composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"

@@ -55,6 +55,7 @@ kill -USR2 1
 * iconv
 * intl
 * mbstring
+* mongodb
 * opcache
 * pcntl
 * pdo
