@@ -67,7 +67,7 @@ RUN bash -c 'echo -e "{ \"config\" : { \"bin-dir\" : \"/usr/local/bin\" } }\n" >
 RUN echo "export COMPOSER_HOME=/usr/local/composer" >> /etc/bash.bashrc
 
 # INSTALL ROBO TASK RUNNER
-RUN composer global require codegyre/robo
+RUN composer global require consolidation/robo
 
 # DOWNLOAD SYMFONY INSTALLER
 RUN curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony && chmod a+x /usr/local/bin/symfony
