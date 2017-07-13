@@ -69,6 +69,24 @@ RUN echo "export COMPOSER_HOME=/usr/local/composer" >> /etc/bash.bashrc
 # INSTALL ROBO TASK RUNNER
 RUN composer global require consolidation/robo
 
+# INSTALL CODECEPTION
+RUN composer global require codeception/codeception
+
+# INSTALL STATIC CODE ANALYSIS, CODE METRICS AND SIMILAR TOOLS
+RUN composer global require \
+  # PHPCS
+  squizlabs/php_codesniffer=3.* \
+  # PHPCPD
+  sebastian/phpcpd=3.* \
+  # PHPLOC
+  phploc/phploc=4.* \
+  # PDEPEND
+  pdepend/pdepend=2.* \
+  # PHPMD
+  phpmd/phpmd=@stable \
+  # PHPDOX
+  theseer/phpdox
+
 # DOWNLOAD SYMFONY INSTALLER
 RUN curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony && chmod a+x /usr/local/bin/symfony
 
