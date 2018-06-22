@@ -1,23 +1,20 @@
-FROM php:7.1.7-fpm
-MAINTAINER Jakub Biernacki <kuba.biernacki@codibly.com>
+FROM php:7.1.18-fpm
+LABEL maimaintainer="Jakub Biernacki <kuba.biernacki@codibly.com>, Andrzej Piszczek <andrzej.piszczek@codibly.com>"
 
 # INSTALL ESSENTIALS LIBS TO COMPILE PHP EXTENSTIONS
 RUN apt-get update && apt-get install -y \
+    #for openssl/ssl.h file
+    libssl-dev \
     # for zip ext
     zlib1g-dev \
-
     # for pg_pgsql ext
     libpq-dev \
-
     # for soap and xml related ext
     libxml2-dev \
-
     # for xslt ext
     libxslt-dev \
-
     # for gd ext
     libjpeg-dev libpng-dev \
-
     # for intl ext
     libicu-dev
 
@@ -52,7 +49,8 @@ RUN docker-php-ext-install \
 
 # INSTALL XDEBUG
 RUN pecl install xdebug
-RUN bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.remote_enable=1\nxdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/xdebug.ini'
+# TURN OFF XDEBUG AS DEFAULT
+COPY php-config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.off
 
 # INSTALL MONGODB
 RUN pecl install mongodb
@@ -66,6 +64,9 @@ RUN rm composer-setup.php
 RUN bash -c 'echo -e "{ \"config\" : { \"bin-dir\" : \"/usr/local/bin\" } }\n" > /usr/local/composer/composer.json'
 RUN echo "export COMPOSER_HOME=/usr/local/composer" >> /etc/bash.bashrc
 
+# INSTALL FOR SPEED UP COMPOSER
+RUN composer global require hirak/prestissimo
+
 # INSTALL ROBO TASK RUNNER
 RUN composer global require consolidation/robo
 
@@ -77,15 +78,13 @@ RUN composer global require \
   # PHPCS
   squizlabs/php_codesniffer=3.* \
   # PHPCPD
-  sebastian/phpcpd=3.* \
+  sebastian/phpcpd=4.* \
   # PHPLOC
   phploc/phploc=4.* \
   # PDEPEND
   pdepend/pdepend=2.* \
   # PHPMD
-  phpmd/phpmd=@stable \
-  # PHPDOX
-  theseer/phpdox
+  phpmd/phpmd=@stable
 
 # DOWNLOAD SYMFONY INSTALLER
 RUN curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony && chmod a+x /usr/local/bin/symfony
@@ -94,4 +93,4 @@ RUN curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony && chmod a
 RUN apt-get clean && apt-get autoremove && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # COPY PHP.INI SUITABLE FOR DEVELOPMENT
-COPY php.ini.development /usr/local/etc/php/php.ini
+COPY php-config/php.ini.development /usr/local/etc/php/php.ini
