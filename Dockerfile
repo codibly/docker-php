@@ -16,7 +16,11 @@ RUN apt-get update && apt-get install -y \
     # for gd ext
     libjpeg-dev libpng-dev \
     # for intl ext
-    libicu-dev
+    libicu-dev \
+    # for ps command
+    procps \
+    # for ifconfig command
+    iproute
 
 # INSTALL PHP EXTENSIONS VIA docker-php-ext-install SCRIPT
 RUN docker-php-ext-install \
