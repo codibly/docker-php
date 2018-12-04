@@ -15,6 +15,8 @@ where **PHP-VERSION** (optional, defaults to **latest**) is a desired version of
 available versions:
 * 7.1.6
 * 7.1.7
+* 7.2
+* 7.3
 
 ### Run
 Type
