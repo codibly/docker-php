@@ -1,4 +1,4 @@
-FROM php:7.1.18-fpm
+FROM php:7.1-fpm
 LABEL maimaintainer="Jakub Biernacki <kuba.biernacki@codibly.com>, Andrzej Piszczek <andrzej.piszczek@codibly.com>"
 
 # INSTALL ESSENTIALS LIBS TO COMPILE PHP EXTENSTIONS
@@ -56,6 +56,13 @@ RUN pecl install xdebug
 # TURN OFF XDEBUG AS DEFAULT
 COPY php-config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.off
 
+# Install blackfire extension
+RUN apt-get install -y wget gnupg
+RUN wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add - \
+    && echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list \
+    && apt-get update \
+    && apt-get install -y blackfire-agent
+
 # INSTALL MONGODB
 RUN pecl install mongodb
 RUN bash -c 'echo extension=mongodb.so > /usr/local/etc/php/conf.d/mongodb.ini'
@@ -68,8 +75,10 @@ RUN rm composer-setup.php
 RUN bash -c 'echo -e "{ \"config\" : { \"bin-dir\" : \"/usr/local/bin\" } }\n" > /usr/local/composer/composer.json'
 RUN echo "export COMPOSER_HOME=/usr/local/composer" >> /etc/bash.bashrc
 
-# INSTALL FOR SPEED UP COMPOSER
-RUN composer global require hirak/prestissimo
+# https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
+ENV COMPOSER_ALLOW_SUPERUSER 1
+RUN composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --classmap-authoritative
+
 
 # INSTALL ROBO TASK RUNNER
 RUN composer global require consolidation/robo
