@@ -16,7 +16,13 @@ RUN apt-get update && apt-get install -y \
     # for intl ext
     libicu-dev \
     # openssl
-    libssl-dev
+    libssl-dev \
+    # sudo for root operations
+    sudo \
+    # htop for resource monitoring
+    htop \
+    # for pkill
+    procps
 
 # INSTALL PHP EXTENSIONS VIA docker-php-ext-install SCRIPT
 RUN docker-php-ext-install \
@@ -53,18 +59,8 @@ RUN bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.remote_enable
 
 # Add global functions for turn on/off xdebug
 RUN echo "sudo mv /usr/local/etc/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.off && sudo pkill -o -USR2 php-fpm" > /usr/bin/xoff && chmod +x /usr/bin/xoff \
-    && echo "sudo mv /usr/local/etc/php/conf.d/xdebug.off /usr/local/etc/php/conf.d/xdebug.ini && sudo pkill -o -USR2 php-fpm" > /usr/bin/xon && chmod +x /usr/bin/xon
-
-# Install blackfire extension
-RUN apt-get install -y wget gnupg
-RUN wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add - \
-    && echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list \
-    && apt-get update \
-    && apt-get install -y blackfire-agent
-
-# INSTALL MONGODB
-RUN pecl install mongodb
-RUN bash -c 'echo extension=mongodb.so > /usr/local/etc/php/conf.d/mongodb.ini'
+    && echo "sudo mv /usr/local/etc/php/conf.d/xdebug.off /usr/local/etc/php/conf.d/xdebug.ini && sudo pkill -o -USR2 php-fpm" > /usr/bin/xon && chmod +x /usr/bin/xon  \
+    && echo 'PS1="[\$(test -e /usr/local/etc/php/conf.d/xdebug.off && echo XOFF || echo XON)] $HC$FYEL[ $FBLE${debian_chroot:+($debian_chroot)}\u$FYEL: $FBLE\w $FYEL]\\$ $RS"' >> /etc/bash.bashrc
 
 # COMPOSER
 ENV COMPOSER_HOME /usr/local/composer
@@ -77,29 +73,6 @@ RUN echo "export COMPOSER_HOME=/usr/local/composer" >> /etc/bash.bashrc
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --classmap-authoritative
-
-
-# INSTALL ROBO TASK RUNNER
-RUN composer global require consolidation/robo
-
-# INSTALL CODECEPTION
-RUN composer global require codeception/codeception
-
-# INSTALL STATIC CODE ANALYSIS, CODE METRICS AND SIMILAR TOOLS
-RUN composer global require \
-  # PHPCS
-  squizlabs/php_codesniffer=3.* \
-  # PHPCPD
-  sebastian/phpcpd=4.* \
-  # PHPLOC
-  phploc/phploc=4.* \
-  # PDEPEND
-  pdepend/pdepend=2.* \
-  # PHPMD
-  phpmd/phpmd=@stable
-
-# DOWNLOAD SYMFONY INSTALLER
-RUN curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony && chmod a+x /usr/local/bin/symfony
 
 # CLEAN APT AND TMP
 RUN apt-get clean && apt-get autoremove && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
