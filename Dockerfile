@@ -102,8 +102,6 @@ RUN set -x \
 #  TWEAK PHP CONFIG
 RUN set -x \
     && mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
-    && rm /usr/local/etc/php-fpm.d/* \
-    && sed -i "s|;error_log = log/php-fpm.log|error_log = /proc/self/fd/2|" /usr/local/etc/php-fpm.conf \
     && sed -i "s|memory_limit.*|memory_limit = 2048M|" $PHP_INI_DIR/php.ini \
     && sed -i "s|max_execution_time.*|max_execution_time = 3000|" $PHP_INI_DIR/php.ini \
     && sed -i "s|upload_max_filesize.*|upload_max_filesize = 32M|" $PHP_INI_DIR/php.ini \
