@@ -18,6 +18,7 @@ available versions:
 * 7.2
 * 7.3
 * 7.4
+* 7.4.1.
 
 ### Run
 Type
