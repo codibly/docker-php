@@ -1,4 +1,4 @@
-FROM php:7.3-cli
+FROM php:7.4-cli
 
 MAINTAINER Codibly <office@codibly.com>
 
@@ -33,6 +33,8 @@ RUN set -x \
         libjpeg-dev libpng-dev \
         # for intl ext
         libicu-dev openssl \
+        # for mbstring ext
+        libonig-dev \
         # openssl
         libssl-dev \
         # htop for resource monitoring
@@ -55,7 +57,7 @@ RUN docker-php-ext-install \
   ftp \
   gettext \
   gd \
-  hash \
+#  hash \
   iconv \
   intl \
   mbstring \
