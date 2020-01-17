@@ -1,4 +1,4 @@
-FROM php:7.3-fpm
+FROM php:7.4-fpm
 MAINTAINER Jakub Biernacki <kuba.biernacki@codibly.com>
 
 # INSTALL ESSENTIALS LIBS TO COMPILE PHP EXTENSTIONS
@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev libpng-dev \
     # for intl ext
     libicu-dev \
+    # for mbstring ext
+    libonig-dev \
     # openssl
     libssl-dev
 
@@ -30,7 +32,7 @@ RUN docker-php-ext-install \
   ftp \
   gettext \
   gd \
-  hash \
+#  hash \
   iconv \
   intl \
   mbstring \
