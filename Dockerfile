@@ -1,4 +1,4 @@
-FROM php:7.4.1-cli
+FROM php:7.4.3-cli
 
 MAINTAINER Codibly <office@codibly.com>
 
