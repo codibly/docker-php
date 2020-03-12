@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:7.4.3-fpm
 MAINTAINER Jakub Biernacki <kuba.biernacki@codibly.com>
 
 # INSTALL ESSENTIALS LIBS TO COMPILE PHP EXTENSTIONS
