@@ -92,9 +92,9 @@ RUN composer global require \
   # PHPCS
   squizlabs/php_codesniffer=3.* \
   # PHPCPD
-  sebastian/phpcpd=4.* \
+  sebastian/phpcpd=5.* \
   # PHPLOC
-  phploc/phploc=4.* \
+  phploc/phploc=6.* \
   # PDEPEND
   pdepend/pdepend=2.* \
   # PHPMD
