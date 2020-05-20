@@ -62,7 +62,7 @@ RUN apt-get install -y wget gnupg
 RUN wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add - \
     && echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list \
     && apt-get update \
-    && apt-get install -y blackfire-agent
+    && apt-get install -y blackfire-agent blackfire-php
 
 # INSTALL MONGODB
 RUN pecl install mongodb
