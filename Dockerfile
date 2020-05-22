@@ -1,5 +1,6 @@
-FROM php:7.4.3-fpm
-MAINTAINER Jakub Biernacki <kuba.biernacki@codibly.com>
+FROM php:7.4.6-fpm
+
+MAINTAINER Radek Smoczyński <radoslaw.smoczynski@codibly.com>
 
 # INSTALL ESSENTIALS LIBS TO COMPILE PHP EXTENSTIONS
 RUN apt-get update && apt-get install -y \
@@ -18,7 +19,17 @@ RUN apt-get update && apt-get install -y \
     # for mbstring ext
     libonig-dev \
     # openssl
-    libssl-dev
+    libssl-dev \
+    git \
+    htop \
+    nano \
+    iputils-ping \
+    curl \
+    sudo \
+    procps \
+    iproute2 \
+    supervisor \
+    cron
 
 # INSTALL PHP EXTENSIONS VIA docker-php-ext-install SCRIPT
 RUN docker-php-ext-install \
@@ -32,7 +43,6 @@ RUN docker-php-ext-install \
   ftp \
   gettext \
   gd \
-#  hash \
   iconv \
   intl \
   mbstring \
@@ -51,18 +61,17 @@ RUN docker-php-ext-install \
 
 # INSTALL XDEBUG
 RUN pecl install xdebug-beta
-RUN bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.remote_enable=1\nxdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/xdebug.ini'
+RUN bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.remote_enable=1\nxdebug.remote_connect_back=1\nxdebug.remote_autostart=1\nxdebug.remote_host=" >> /usr/local/etc/php/conf.d/xdebug.ini'
 
-# Add global functions for turn on/off xdebug
-RUN echo "sudo mv /usr/local/etc/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.off && sudo pkill -o -USR2 php-fpm" > /usr/bin/xoff && chmod +x /usr/bin/xoff \
-    && echo "sudo mv /usr/local/etc/php/conf.d/xdebug.off /usr/local/etc/php/conf.d/xdebug.ini && sudo pkill -o -USR2 php-fpm" > /usr/bin/xon && chmod +x /usr/bin/xon
+# INSTALL XDEBUG AND ADD FUNCTIONS TO TURN ON/OFF XDEBUG
+COPY conf/xoff.sh /usr/bin/xoff
+COPY conf/xon.sh /usr/bin/xon
 
-# Install blackfire extension
-RUN apt-get install -y wget gnupg
-RUN wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add - \
-    && echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list \
-    && apt-get update \
-    && apt-get install -y blackfire-agent blackfire-php
+RUN set -x \
+    && chmod +x /usr/bin/xoff \
+    && chmod +x /usr/bin/xon \
+    && mv /usr/local/etc/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.off \
+    && echo 'PS1="[\$(test -e /usr/local/etc/php/conf.d/xdebug.off && echo XOFF || echo XON)] $HC$FYEL[ $FBLE${debian_chroot:+($debian_chroot)}\u$FYEL: $FBLE\w $FYEL]\\$ $RS"' | tee /etc/bash.bashrc /etc/skel/.bashrc;
 
 # INSTALL MONGODB
 RUN pecl install mongodb
@@ -107,4 +116,19 @@ RUN curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony && chmod a
 RUN apt-get clean && apt-get autoremove && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # COPY PHP.INI SUITABLE FOR DEVELOPMENT
-COPY php.ini.development /usr/local/etc/php/php.ini
+COPY conf/php.ini.development /usr/local/etc/php/php.ini
+
+# CREATE PHP.INI FOR CLI AND TWEAK IT
+RUN cp /usr/local/etc/php/php.ini /usr/local/etc/php/php-cli.ini && \
+    sed -i "s|memory_limit.*|memory_limit = -1|" /usr/local/etc/php/php-cli.ini
+
+# TWEAK MAIN PHP.INI CONFIG FILE
+RUN sed -i "s|upload_max_filesize.*|upload_max_filesize = 128M|" /usr/local/etc/php/php.ini && \
+    sed -i "s|post_max_size.*|post_max_size = 128M|" /usr/local/etc/php/php.ini && \
+    sed -i "s|max_execution_time.*|max_execution_time = 300|" /usr/local/etc/php/php.ini && \
+    sed -i "s|expose_php.*|expose_php = off|" /usr/local/etc/php/php.ini && \
+    sed -i "s|memory_limit.*|memory_limit = 3048M|" /usr/local/etc/php/php.ini
+
+# COPY SUPERVISOR CONFIGURATION
+COPY conf/supervisord.conf /etc/supervisor/supervisord.conf
+RUN chmod 0644 /etc/supervisor/supervisord.conf
