@@ -61,7 +61,7 @@ RUN docker-php-ext-install \
 
 # INSTALL XDEBUG
 RUN pecl install xdebug-beta
-RUN bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.remote_enable=1\nxdebug.remote_connect_back=1\nxdebug.remote_autostart=1\nxdebug.remote_host=" >> /usr/local/etc/php/conf.d/xdebug.ini'
+RUN bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.remote_enable=1\nxdebug.remote_connect_back=0\nxdebug.remote_autostart=1\nxdebug.remote_host=" >> /usr/local/etc/php/conf.d/xdebug.ini'
 
 # INSTALL XDEBUG AND ADD FUNCTIONS TO TURN ON/OFF XDEBUG
 COPY conf/xoff.sh /usr/bin/xoff
