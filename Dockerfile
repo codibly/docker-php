@@ -92,12 +92,6 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --classmap-authoritative
 
 
-# INSTALL ROBO TASK RUNNER
-RUN composer global require consolidation/robo
-
-# INSTALL CODECEPTION
-RUN composer global require codeception/codeception
-
 # INSTALL STATIC CODE ANALYSIS, CODE METRICS AND SIMILAR TOOLS
 RUN composer global require \
   # PHPCS
