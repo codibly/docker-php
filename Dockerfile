@@ -1,4 +1,4 @@
-FROM php:7.4.6-fpm
+FROM php:7.4.10-fpm
 
 MAINTAINER Radek Smoczyński <radoslaw.smoczynski@codibly.com>
 
@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y \
     iputils-ping \
     curl \
     sudo \
+    passwd \
+    sqlite \
     procps \
     iproute2 \
     supervisor \
@@ -128,6 +130,21 @@ RUN sed -i "s|upload_max_filesize.*|upload_max_filesize = 128M|" /usr/local/etc/
     sed -i "s|max_execution_time.*|max_execution_time = 300|" /usr/local/etc/php/php.ini && \
     sed -i "s|expose_php.*|expose_php = off|" /usr/local/etc/php/php.ini && \
     sed -i "s|memory_limit.*|memory_limit = 3048M|" /usr/local/etc/php/php.ini
+
+# PREPARE USER www-data WITH PROPER ID TO SOLVE FILE PERMISSION ISSUE ON IDE LEVEL
+# local user need to have id 1000, in other way this proces need to rearanged on project level
+
+ENV HOME_DIR=/var/www
+ENV USER_LOGIN=www-data
+ENV USER_ID=1000
+
+RUN usermod -u $USER_ID $USER_LOGIN && \
+    groupmod -g $USER_ID $USER_LOGIN && \
+    usermod -aG sudo $USER_LOGIN && \
+    echo "$USER_LOGIN ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# SYMFONY TWEAK
+RUN echo "alias sf='bin/console'" >> $HOME_DIR/.bashrc
 
 # COPY SUPERVISOR CONFIGURATION
 COPY conf/supervisord.conf /etc/supervisor/supervisord.conf
