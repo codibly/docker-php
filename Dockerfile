@@ -97,8 +97,7 @@ RUN set -x \
     && php composer-setup.php --install-dir=/usr/bin --filename=composer \
     && rm composer-setup.php \
     && bash -c 'echo -e "{ \"config\" : { \"bin-dir\" : \"/usr/local/bin\" } }\n" > /usr/local/composer/composer.json' \
-    && echo "export COMPOSER_HOME=/usr/local/composer" >> /etc/bash.bashrc \
-    && composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --classmap-authoritative;
+    && echo "export COMPOSER_HOME=/usr/local/composer" >> /etc/bash.bashrc;
 
 ############# CONFIGURE ############
 #  TWEAK PHP CONFIG
