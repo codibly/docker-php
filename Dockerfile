@@ -1,6 +1,6 @@
-FROM php:7.4.6-cli
+FROM php:7.4.12-cli
 
-MAINTAINER Codibly <office@codibly.com>
+MAINTAINER Andrzej Piszczek <andrzej.piszczek@codibly.com>
 
 WORKDIR /opt/app/
 
