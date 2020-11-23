@@ -79,7 +79,7 @@ COPY scripts/xon.sh /usr/bin/xon
 
 # INSTALL XDEBUG
 RUN set -x \
-    && pecl install xdebug-beta \
+    && pecl install xdebug \
     && bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.remote_enable=1\nxdebug.remote_connect_back=0\nxdebug.remote_autostart=1\nxdebug.remote_host=" >> /usr/local/etc/php/conf.d/xdebug.ini' \
     # Add global functions for turn on/off xdebug
     && chmod +x /usr/bin/xoff \
