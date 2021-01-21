@@ -1,4 +1,4 @@
-FROM php:7.4.12-cli
+FROM php:8.0.1-cli
 
 MAINTAINER Andrzej Piszczek <andrzej.piszczek@codibly.com>
 
@@ -57,7 +57,6 @@ RUN docker-php-ext-install \
   ftp \
   gettext \
   gd \
-#  hash \
   iconv \
   intl \
   mbstring \
