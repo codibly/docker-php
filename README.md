@@ -1,29 +1,18 @@
-## PHP with fpm
+## PHP CLI
 PHP docker image based on official one with pre-installed extensions and tools.
 
 ### Download
 Grab it by running
 ```
-docker pull codibly/php:PHP-VERSION
+docker pull codibly/php:PHP-VERSION[-cli]
 ```
-where **PHP-VERSION** (optional, defaults to **latest**) is a desired version of PHP:
-
-* **7** - the very latest stable version (same as **latest**)
-* **7.x** - the latest version for 7.x branch
-* **7.x.y** - the specific version
-
-available versions:
-* 7.1.6
-* 7.1.7
-* 7.2
-* 7.3
-* 7.4
-* 7.4.1.
+where **PHP-VERSION** (optional, defaults to **latest**) is a desired version of PHP and **-cli** is
+another optional argument to get version dedicated for CLI applications.
 
 ### Run
 Type
 ```
-docker run --name some-php -d codibly/php:PHP-VERSION
+docker run --name some-php -d codibly/php:PHP-VERSION[-cli]
 ```
 
 That will start php-fpm daemon listening on 9000 port with PID 1.
@@ -39,7 +28,7 @@ Main PHP configuration file can be found at ```/usr/local/etc/php/php.ini``` and
 
 Main php-fpm configuration is here ```/usr/local/etc/php-fpm.conf``` while pools configuration should be place in ```/usr/local/etc/php-fpm.d``` with **.conf** extension.
 
-To tweak anyting you can provide your own configuration file in your derived images or edit existing one and tell php-fpm daemon to reload itself  by sending USR2 signal
+To tweak anything you can provide your own configuration file in your derived images or edit existing one and tell php-fpm daemon to reload itself by sending USR2 signal:
 
 ```
 kill -USR2 1

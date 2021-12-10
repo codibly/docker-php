@@ -1,6 +1,6 @@
-FROM php:8.0.1-cli
+FROM php:8.1.0-cli
 
-MAINTAINER Andrzej Piszczek <andrzej.piszczek@codibly.com>
+MAINTAINER Codibly <office@codibly.com>
 
 WORKDIR /opt/app/
 
@@ -41,8 +41,9 @@ RUN set -x \
         htop \
         # for pkill
         procps \
+        # utilities
         vim iputils-ping curl iproute2 \
-        #
+        # for controlling system processes
         supervisor
 
 # INSTALL PHP EXTENSIONS VIA docker-php-ext-install SCRIPT
@@ -78,9 +79,9 @@ COPY scripts/xon.sh /usr/bin/xon
 
 # INSTALL XDEBUG
 RUN set -x \
-    && pecl install xdebug \
-    && bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.remote_enable=1\nxdebug.remote_connect_back=0\nxdebug.remote_autostart=1\nxdebug.remote_host=" >> /usr/local/etc/php/conf.d/xdebug.ini' \
-    # Add global functions for turn on/off xdebug
+    && pecl install xdebug-3.1.2 \
+    && bash -c 'echo -e "\n[xdebug]\nzend_extension=xdebug.so\nxdebug.mode=debug\nxdebug.start_with_request=yes\nxdebug.client_port=9003\nxdebug.client_host=" >> /usr/local/etc/php/conf.d/xdebug.ini' \
+    # add global functions to turn xdebug on/off
     && chmod +x /usr/bin/xoff \
     && chmod +x /usr/bin/xon \
     # turn off xdebug as default
