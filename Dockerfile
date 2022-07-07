@@ -1,4 +1,4 @@
-FROM php:8.1.0-cli
+FROM php:8.1.7-cli
 
 MAINTAINER Codibly <office@codibly.com>
 
